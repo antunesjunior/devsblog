@@ -17,11 +17,21 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $firstName =  $this->faker->firstName();
+        $lastName =  $this->faker->lastName();
+        $url = "www.".strtolower($firstName).strtolower($lastName).".com";
+
         return [
-            'name' => $this->faker->name(),
+            'first_name' => $firstName,
+            'last_name' => $lastName,
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'picture' => $this->faker->imageUrl(),
+            'web' => $url,
+            'bio' => $this->faker->sentence(),
+            'company' => $this->faker->company(),
+            'city' => $this->faker->city(),
             'remember_token' => Str::random(10),
         ];
     }
