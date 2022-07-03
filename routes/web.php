@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\SiteController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [SiteController::class, "signin"])->name('signin');
+Route::post('/signin', [SiteController::class, "auth"])->name('auth');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/auth/home', [UserController::class, "index"])->name('auth.home');
+    Route::get('/auth/logout', [UserController::class, "logout"])->name('auth.logout');
 });
