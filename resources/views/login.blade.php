@@ -29,8 +29,13 @@
         <input type="checkbox" name="remember" id="remember">
         <label for="remember">Savar dados?</label>
     </div>
-    <input type="submit" value="cadastrar">
-
+    <input type="submit" value="entrar">
 </form>
+
+<br>
+<p>
+    Ainda não tem uma conta? 
+    <a href="{{ route('register') }}">Clique aqui para criar</a>
+</p>
 
 @endsection

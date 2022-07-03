@@ -4,7 +4,7 @@
 
 <h2>Home</h2>
 
-<p>Seja bem vindo {{ $user->first_name }} {{ $user->last_name }}</p>
+<p>Seja bem vindo <strong>{{ $user->first_name }} {{ $user->last_name }}</strong></p>
 
 <a href="{{ route('auth.logout') }}">Sair</a>
 
