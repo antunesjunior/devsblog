@@ -8,7 +8,7 @@
     <p>{{ session('alert') }}</p>
 @endif
 
-<form action="{{ route('auth') }}" method="post">
+<form action="{{ route('auth.login') }}" method="post">
     @csrf
     <div class="form-group">
         <input type="email" name="email" placeholder="Email" value="{{ old('email') }}">
@@ -36,6 +36,10 @@
 <p>
     Ainda não tem uma conta? 
     <a href="{{ route('register') }}">Clique aqui para criar</a>
+</p>
+<p>
+    Esqueceu a sua senha? 
+    <a href="{{ route('password.notice') }}">Clique aqui para recuperar</a>
 </p>
 
 @endsection

@@ -11,7 +11,7 @@
 </head>
 <body>
     <header>
-        <h1>DEVSBLOG</h1>
+        <h1><a href="{{ route('index') }}">DEVSBLOG</a></h1>
         <hr>
     </header>
 
