@@ -23,7 +23,7 @@ class EmailVerificationController extends Controller
     public function confirmEmail(EmailVerificationRequest $request)
     {
         $request->fulfill();
-        return redirect()->route('auth.home');
+        return redirect()->route('home');
     }
 
 }

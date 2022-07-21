@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -36,8 +37,13 @@ class UserController extends Controller
 
     public function show()
     {
-        $user = Auth::user();
-        return view('auth.profile', ['user' => $user]);
+        $user = auth()->user();
+        $posts = $user->posts()->orderBy('id', 'DESC')->get();
+
+        return view('auth.profile', [
+            'user'  => $user,
+            'posts' => $posts
+        ]);
     }
 
     public function edit()

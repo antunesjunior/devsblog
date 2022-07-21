@@ -15,7 +15,7 @@
         <hr>
         <div style="border: 1px solid black; padding:20px 10px">
             <a href="{{ route('home') }}"><strong>Home</strong></a>&nbsp;|
-            <a href="{{ route('home') }}"><strong>Artigos</strong></a>&nbsp;|
+            <a href="{{ route('posts.create') }}"><strong>Criar Artigo</strong></a>&nbsp;|
             <a href="{{ route('profile') }}"><strong>Perfil</strong></a>&nbsp;|
             <a href="{{ route('logout') }}"><strong>Sair</strong></a>
         </div>

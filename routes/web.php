@@ -4,22 +4,14 @@ use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+
 Route::get('/', [SiteController::class, "index"])->name('index');
 
 Route::get('/login', [LoginController::class, "login"])->name('login'); 
@@ -46,4 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [UserController::class, "show"])->name('profile');
     Route::get('/profile/edit', [UserController::class, "edit"])->name('profile.edit');
     Route::post('/profile/edit', [UserController::class, "update"])->name('teste');
+
+    Route::resource('posts', PostController::class, ['except' => 'destroy']);
+    Route::get('/posts/{id}/delete', [PostController::class, "destroy"])->name('posts.destroy');
 });

@@ -23,7 +23,20 @@
     </div>
 @endif
 
-
 <div><a href="{{ route('profile.edit') }}">Editar perfil</a></div>
-    
+<br><br>
+
+<h2>Meus artigos publicados</h2>
+<hr>
+
+@foreach ($posts as $post)
+    <div style="border: 1px solid orange; padding:10px; margin-bottom:5px">
+        <h3>{{ $post->title }}</h3>
+        <p>{{ $post->description }}</p>
+        <a href="{{ route('posts.show', $post->id) }}">Ver</a> |
+        <a href="{{ route('posts.edit', $post->id) }}">Editar</a> |
+        <a href="{{ route('posts.destroy', $post->id) }}">Eliminar</a>
+    </div>
+@endforeach
+
 @endsection
