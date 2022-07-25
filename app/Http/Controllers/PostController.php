@@ -14,9 +14,10 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function listPostedOrDraft(string $status)
     {
-        
+        $posts = new Post();
+        return $posts->getByStatus(auth()->user(), $status);
     }
 
     /**
@@ -49,6 +50,29 @@ class PostController extends Controller
         $coverPath = 'public/posts/covers';
         $cover->storeAs($coverPath, $coverName);
 
+        $postData['cover']   = $coverName;
+        $postData['user_id'] = auth()->user()->id;
+        $postData['uri']     = Str::slug($request->input('title'));
+    
+        Post::create($postData);
+        return back()->with('message', 'Artigo Publicado com sucesso');
+    }
+
+    public function storeAsDraft(Request $request)
+    {
+        $postData = $request->validate([
+            'title'       => ['required', 'min:3'],
+            'description' => ['required', 'min:3'],
+            'content'     => ['required', 'min:3'],
+            'cover'       => ['required','file', 'mimes:jpg,jpeg,png', 'max:2048'],
+        ]);
+
+        $cover = $request->file('cover');
+        $coverName = $cover->hashName();
+        $coverPath = 'public/posts/covers';
+        $cover->storeAs($coverPath, $coverName);
+
+        $postData['status']  = 'draft';
         $postData['cover']   = $coverName;
         $postData['user_id'] = auth()->user()->id;
         $postData['uri']     = Str::slug($request->input('title'));

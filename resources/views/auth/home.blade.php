@@ -2,8 +2,12 @@
 
 @section('content')
 
-<h2>Home</h2>
+<h2>
+    Home.<small style="font-size: 12px; color: blue">
+        {{ $user->first_name }} {{ $user->last_name }}
+    </small>
+</h2>
 
-<p>Seja bem vindo <strong>{{ $user->first_name }} {{ $user->last_name }}</strong></p>
+<div><a href="#">Seguindo</a> | <a href="#">Para você</a></div>
 
 @endsection

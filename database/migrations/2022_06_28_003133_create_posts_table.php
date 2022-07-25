@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('cover');
             $table->text('content');
-            $table->enum('status', ['posted', 'draft'])->default('draft');
+            $table->enum('status', ['posted', 'draft'])->default('posted');
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });

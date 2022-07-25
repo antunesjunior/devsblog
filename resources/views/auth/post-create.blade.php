@@ -40,7 +40,8 @@
             @enderror
         </div>
 
-        <input type="submit" value="guaradar rascunho">
+        <input type="submit" value="guaradar rascunho" formaction="{{ route('post.draft') }}">
+        <input type="submit" value="Publicar agora">
     </form>
 
 @endsection

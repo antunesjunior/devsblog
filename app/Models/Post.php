@@ -24,4 +24,9 @@ class Post extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getByStatus(User $user, string $status)
+    {
+        return $user->posts()->where('status', $status)->get();
+    }
 }

@@ -39,6 +39,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/edit', [UserController::class, "edit"])->name('profile.edit');
     Route::post('/profile/edit', [UserController::class, "update"])->name('teste');
 
-    Route::resource('posts', PostController::class, ['except' => 'destroy']);
+    Route::resource('posts', PostController::class, ['except' => 'index, destroy']);
+    Route::get('/posts/{status}/list', [PostController::class, 'listPostedOrDraft'])->name('posts.list');
+    Route::post('/posts/store/draft', [PostController::class, 'storeAsDraft'])->name('post.draft');
     Route::get('/posts/{id}/delete', [PostController::class, "destroy"])->name('posts.destroy');
 });
