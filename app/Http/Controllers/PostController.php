@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -36,14 +37,9 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $postData = $request->validate([
-            'title'       => ['required', 'min:3'],
-            'description' => ['required', 'min:3'],
-            'content'     => ['required', 'min:3'],
-            'cover'       => ['required','file', 'mimes:jpg,jpeg,png', 'max:2048'],
-        ]);
+        $postData = $request->validated();
 
         $cover = $request->file('cover');
         $coverName = $cover->hashName();
@@ -53,32 +49,11 @@ class PostController extends Controller
         $postData['cover']   = $coverName;
         $postData['user_id'] = auth()->user()->id;
         $postData['uri']     = Str::slug($request->input('title'));
+
+        $request->has('draft') ? $postData['status'] = 'draft' : '';
     
         Post::create($postData);
-        return back()->with('message', 'Artigo Publicado com sucesso');
-    }
-
-    public function storeAsDraft(Request $request)
-    {
-        $postData = $request->validate([
-            'title'       => ['required', 'min:3'],
-            'description' => ['required', 'min:3'],
-            'content'     => ['required', 'min:3'],
-            'cover'       => ['required','file', 'mimes:jpg,jpeg,png', 'max:2048'],
-        ]);
-
-        $cover = $request->file('cover');
-        $coverName = $cover->hashName();
-        $coverPath = 'public/posts/covers';
-        $cover->storeAs($coverPath, $coverName);
-
-        $postData['status']  = 'draft';
-        $postData['cover']   = $coverName;
-        $postData['user_id'] = auth()->user()->id;
-        $postData['uri']     = Str::slug($request->input('title'));
-    
-        Post::create($postData);
-        return back()->with('message', 'Racunho guardado com sucesso');
+        return back()->with('message', 'Sucesso');
     }
 
     /**
@@ -113,14 +88,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StorePostRequest $request, $id)
     {
-        $postData = $request->validate([
-            'title'       => ['required', 'min:3'],
-            'description' => ['required', 'min:3'],
-            'content'     => ['required', 'min:3'],
-            'cover'       => ['file', 'mimes:jpg,jpeg,png', 'max:2048'],
-        ]);
+        $postData = $request->validated();
 
         $post = Post::find($id);
 
