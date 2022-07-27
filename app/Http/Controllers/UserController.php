@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,31 +21,24 @@ class UserController extends Controller
         return view('register');
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validate = $request->validate([
-            'first_name'     => ['required'],
-            'last_name'      => ['required'],
-            'email'          => ['required', 'email', 'unique:users'],
-            'password'       => ['required', 'confirmed', 'min:5'],
-        ]);
+        $input = $request->validated();
 
-        $validate['password'] = Hash::make($request->input('password'));
-        $user = User::create($validate);
+        $input['password'] = Hash::make($request->input('password'));
+        $user = User::create($input);
 
         Auth::login($user);
         event(new Registered($user));
         return redirect()->route('verification.notice');
     }
 
-    public function show()
+    public function show($id)
     {
-        $user = auth()->user();
-        $posts = $user->posts()->orderBy('id', 'DESC')->get();
+        $user = User::findOrFail($id);
 
         return view('auth.profile', [
             'user'  => $user,
-            'posts' => $posts
         ]);
     }
 
@@ -52,18 +48,14 @@ class UserController extends Controller
         return view('auth.profile-edit', ['user' => $user]);
     }
 
-    public function update(Request $request)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $validate = $request->validate([
-            'first_name' => ['required'],
-            'last_name'  => ['required'],
-            'bio'        => ['nullable'],
-            'company'    => ['nullable'],
-            'web'        => ['nullable'],
-            'city'       => ['nullable','min:3'],
-            'picture'    => ['file', 'mimes:jpg,jpeg,png', 'max:2048'],
-        ]);
+        $input = $request->validated();
 
+        $user = User::findOrFail($id);
+
+        $this->authorize('update', $user);
+        
         if ($request->hasFile('picture')) 
         {
             $image = $request->file('picture');
@@ -71,20 +63,14 @@ class UserController extends Controller
             $imageName = $image->hashName();
             $image->storeAs($storagePath, $imageName);
 
-            if (auth()->user()->picture) {
+            if (Auth::user()->picture) {
                 Storage::delete($storagePath.'/'.auth()->user()->picture);
             }
 
-            $validate['picture'] = $imageName;
+            $input['picture'] = $imageName;
         }
-        auth()->user()->fill($validate)->save();
-        
-        return redirect()->route('profile', ['user' => auth()->user()]);
-    }
 
-
-    public function destroy($id)
-    {
-        //
+        Auth::user()->fill($input)->save();
+        return redirect()->route('user.show', ['id' => $id]);
     }
 }
