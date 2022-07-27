@@ -4,7 +4,7 @@
 
 <h2>Editar perfil</h2>
 
-<form action="{{ route('teste') }}" enctype="multipart/form-data" method="POST">
+<form action="{{ route('user.update', $user->id) }}" enctype="multipart/form-data" method="POST">
     @csrf
     <div>
         <input type="text" name="first_name" value="{{ $user->first_name }}">

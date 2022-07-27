@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
@@ -31,14 +32,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/logout', [LoginController::class, "logout"])->name('logout');
 
     Route::get('/email/verify', [EmailVerificationController::class, "verifyEmail"])->name('verification.notice');
-    Route::get('/email/verification-notification', [EmailVerificationController::class, "verifyEmailSend"])->name('verification.send');
+    Route::get('/email/verification-notification', [EmailVerificationController::class, "verifyEmailSend"])->name('verification.send'); 
     Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, "confirmEmail"])
         ->middleware('signed')->name('verification.verify');
 
-    Route::get('/profile', [UserController::class, "show"])->name('profile');
-    Route::get('/profile/edit', [UserController::class, "edit"])->name('profile.edit');
-    Route::post('/profile/edit', [UserController::class, "update"])->name('teste');
+    Route::prefix('user')->group(function () {
+        Route::get('/edit', [UserController::class, 'edit'])->name('user.edit');
+        Route::post('/{id}/edit', [UserController::class, "update"])->name('user.update');
+        Route::get('/{id}', [UserController::class, "show"])->name('user.show');
+    });
 
+   
     Route::resource('posts', PostController::class)->except([
         'index', 'destroy'
     ]);
