@@ -25,7 +25,7 @@ class PostController extends Controller
     public function published($userId)
     {
         $user = User::findOrFail($userId);
-        $posts = (new Post())->getByStatus($user, 'posted');
+        $posts = (new Post())->getByUserAndStatus($user, 'posted');
         return response()->json($posts);
     }
 
@@ -34,7 +34,7 @@ class PostController extends Controller
         $user = User::findOrFail($userId);
         $this->authorize('viewDrafts', $user);
 
-        $posts = (new Post())->getByStatus($user, 'draft');
+        $posts = (new Post())->getByUserAndStatus($user, 'draft');
         return response()->json($posts);
     }
 
