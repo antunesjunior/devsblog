@@ -27,6 +27,6 @@ class Post extends Model
 
     public function getByStatus(User $user, string $status)
     {
-        return $user->posts()->where('status', $status)->get();
+        return $user->posts()->where('status', $status)->orderBy('id', 'DESC')->get();
     }
 }

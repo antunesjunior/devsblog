@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -15,10 +16,26 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function listPostedOrDraft(string $status)
+    public function index()
     {
-        $posts = new Post();
-        return $posts->getByStatus(auth()->user(), $status);
+        $posts = Post::where('status', 'posted');
+        return response()->json($posts);
+    }
+
+    public function published($userId)
+    {
+        $user = User::findOrFail($userId);
+        $posts = (new Post())->getByStatus($user, 'posted');
+        return response()->json($posts);
+    }
+
+    public function drafts($userId)
+    {
+        $user = User::findOrFail($userId);
+        $this->authorize('viewDrafts', $user);
+
+        $posts = (new Post())->getByStatus($user, 'draft');
+        return response()->json($posts);
     }
 
     /**

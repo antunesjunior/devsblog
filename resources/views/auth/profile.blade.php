@@ -23,15 +23,27 @@
     </div>
 @endif
 
-<div><a href="{{ route('profile.edit') }}">Editar perfil</a></div>
+@can('update', $user)
+    <div>
+        <a href="{{ route('user.edit') }}">Editar perfil</a>
+    </div>
+@endcan
+
 <br><br>
 
-<h2>Meus artigos</h2>
+@can('update', $user)
+    <h2>Meus artigos</h2>
+@else
+    <h2>Artigos de {{ $user->first_name }}</h2>
+@endcan
+
 <hr>
 
 <div>
-    <a href="{{ route('posts.list', 'posted') }}">Publicados</a> |
-    <a href="{{ route('posts.list', 'draft') }}">Rascunhos</a>
+    <a href="{{ route('posts.published', $user->id) }}">Publicados</a> 
+    @can('viewDrafts', $user)
+       | <a href="{{ route('posts.draft', $user->id) }}">Rascunhos</a>
+    @endcan
 </div>
 
 @endsection

@@ -9,9 +9,13 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
+    public function viewDrafts(User $authUser, User $user)
+    {
+        return $authUser->can('update', $user);
+    }
+
     public function update(User $authUser, User $user)
     {
         return $authUser->id === $user->id;
     }
-    
 }
