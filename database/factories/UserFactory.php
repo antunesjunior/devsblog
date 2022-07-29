@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Helpers\UserHelper;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -18,12 +19,14 @@ class UserFactory extends Factory
     public function definition()
     {
         $firstName =  $this->faker->firstName();
-        $lastName =  $this->faker->lastName();
-        $url = "www.".strtolower($firstName).strtolower($lastName).".com";
+        $lastName  =  $this->faker->lastName();
+        $username  =  UserHelper::generateUserName($firstName.$lastName);
+        $url       = "www.".strtolower($firstName).strtolower($lastName).".com";
 
         return [
             'first_name' => $firstName,
             'last_name' => $lastName,
+            'username' => $username,
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
