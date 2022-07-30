@@ -44,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('posts', PostController::class)->except([
         'destroy'
     ]);
-    Route::get('/posts/user/{userId}/published', [PostController::class, 'published'])->name('posts.published');
-    Route::get('/posts/user/{userId}/drafts', [PostController::class, 'drafts'])->name('posts.draft');
+    Route::get('/posts/{username}/published', [PostController::class, 'published'])->name('posts.published');
+    Route::get('/posts/{username}/drafts', [PostController::class, 'drafts'])->name('posts.draft');
     Route::get('/posts/{id}/delete', [PostController::class, "destroy"])->name('posts.destroy');
 });
