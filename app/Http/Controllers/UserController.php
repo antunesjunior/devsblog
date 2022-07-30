@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\UserHelper;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Post;
@@ -33,9 +34,9 @@ class UserController extends Controller
         return redirect()->route('verification.notice');
     }
 
-    public function show($id)
+    public function show($username)
     {
-        $user = User::findOrFail($id);
+        $user = User::getByUsername($username);
 
         return view('auth.profile', [
             'user'  => $user,
@@ -45,17 +46,31 @@ class UserController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        return view('auth.profile-edit', ['user' => $user]);
+        return view('auth.profile-edit', [
+            'user' => $user,
+        ]);
     }
 
-    public function update(UpdateUserRequest $request, $id)
+    public function update(UpdateUserRequest $request, $username)
     {
         $input = $request->validated();
 
-        $user = User::findOrFail($id);
+        $newUsername = $request->get('username');
+        $user = User::getByUsername($username);
+
+        if (!isset($user)) {
+            abort(404);
+        }
 
         $this->authorize('update', $user);
-        
+
+        if (Auth::user()->username != $newUsername) {
+            if (User::checkUsername($newUsername, $user->id)) {
+                return redirect()->back()->with('message', 'Este username já existe, não pode ser usado');
+            }
+            $input['username'] = UserHelper::generateUserName($newUsername);
+        }
+
         if ($request->hasFile('picture')) 
         {
             $image = $request->file('picture');
@@ -69,8 +84,8 @@ class UserController extends Controller
 
             $input['picture'] = $imageName;
         }
-
+        
         Auth::user()->fill($input)->save();
-        return redirect()->route('user.show', ['id' => $id]);
+        return redirect()->route('user.show', ['username' => $input['username']]);
     }
 }

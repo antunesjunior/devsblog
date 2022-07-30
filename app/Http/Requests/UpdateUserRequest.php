@@ -30,6 +30,7 @@ class UpdateUserRequest extends FormRequest
             'company'    => ['nullable'],
             'web'        => ['nullable'],
             'city'       => ['nullable','min:3'],
+            'username'   => ['required', 'alpha_dash', 'min:3'],
             'picture'    => ['file', 'mimes:jpg,jpeg,png', 'max:2048'],
         ];
     }
