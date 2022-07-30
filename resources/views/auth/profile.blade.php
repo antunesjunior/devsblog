@@ -40,9 +40,9 @@
 <hr>
 
 <div>
-    <a href="{{ route('posts.published', $user->id) }}">Publicados</a> 
+    <a href="{{ route('posts.published', $user->username) }}">Publicados</a> 
     @can('viewDrafts', $user)
-       | <a href="{{ route('posts.draft', $user->id) }}">Rascunhos</a>
+       | <a href="{{ route('posts.draft', $user->username) }}">Rascunhos</a>
     @endcan
 </div>
 

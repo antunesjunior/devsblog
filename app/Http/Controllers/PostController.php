@@ -22,19 +22,27 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
-    public function published($userId)
+    public function published($username)
     {
-        $user = User::findOrFail($userId);
+        $user = User::getByUsername($username);
+        if (!isset($user)) {
+            abort(404);
+        }
+
         $posts = (new Post())->getByUserAndStatus($user, 'posted');
         return response()->json($posts);
     }
 
-    public function drafts($userId)
+    public function drafts($username)
     {
-        $user = User::findOrFail($userId);
-        $this->authorize('viewDrafts', $user);
+        $user = User::getByUsername($username);
+        if (!isset($user)) {
+            abort(404);
+        }
 
+        $this->authorize('viewDrafts', $user);
         $posts = (new Post())->getByUserAndStatus($user, 'draft');
+
         return response()->json($posts);
     }
 
@@ -127,7 +135,7 @@ class PostController extends Controller
         $postData['uri'] = Str::slug($request->input('title'));
 
         $post->fill($postData)->save();
-        return redirect()->route('profile')->with('message', 'Racunho actualizado com sucesso');
+        return redirect()->route('profile')->with('message', 'Post actualizado com sucesso');
     }
 
     /**
