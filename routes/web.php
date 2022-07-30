@@ -36,12 +36,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, "confirmEmail"])
         ->middleware('signed')->name('verification.verify');
 
-    Route::prefix('user')->group(function () {
-        Route::get('/edit', [UserController::class, 'edit'])->name('user.edit');
-        Route::post('/{id}/edit', [UserController::class, "update"])->name('user.update');
-        Route::get('/{id}', [UserController::class, "show"])->name('user.show');
-    });
 
+    Route::get('/user/edit', [UserController::class, 'edit'])->name('user.edit');
+    Route::put('/{username}/edit', [UserController::class, "update"])->name('user.update');
+    Route::get('/{username}', [UserController::class, "show"])->name('user.show');
    
     Route::resource('posts', PostController::class)->except([
         'destroy'
