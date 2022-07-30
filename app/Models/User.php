@@ -21,6 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     protected $fillable = [
         'first_name',
         'last_name',
+        'username',
         'email',
         'password',
         'picture',
@@ -53,4 +54,16 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     {
         return $this->hasMany(Post::class);
     }
+
+    public static function getByUsername(string $username)
+    {
+        $user = User::where('username', $username)->first();
+        return $user;
+    }
+
+    public static function checkUsername($username, $userId)
+    {
+        return User::where('username', $username)->where('id', '!=', $userId)->exists();
+    }
+
 }
