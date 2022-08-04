@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Follower;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -17,5 +18,10 @@ class UserPolicy
     public function update(User $authUser, User $user)
     {
         return $authUser->id === $user->id;
+    }
+
+    public function meet(User $authUser, User $user)
+    {
+        return !Follower::isFollowed($authUser->id, $user->id);
     }
 }

@@ -40,6 +40,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::put('/{username}/edit', [UserController::class, "update"])->name('user.update');
     Route::get('/{username}', [UserController::class, "show"])->name('user.show');
+    Route::get('/users/meet', [UserController::class, "meetAuthors"])->name('users.meet');
+    Route::get('/{username}/follow', [UserController::class, "follow"])->name('user.follow');
    
     Route::resource('posts', PostController::class)->except([
         'destroy'

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\UserHelper;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Follower;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -31,6 +32,7 @@ class UserController extends Controller
 
         Auth::login($user);
         event(new Registered($user));
+        
         return redirect()->route('verification.notice');
     }
 
@@ -64,8 +66,10 @@ class UserController extends Controller
 
         $this->authorize('update', $user);
 
-        if (Auth::user()->username != $newUsername) {
-            if (User::checkUsername($newUsername, $user->id)) {
+        if (Auth::user()->username != $newUsername) 
+        {
+            if (User::checkUsername($newUsername, $user->id)) 
+            {
                 return redirect()->back()->with('message', 'Este username já existe, não pode ser usado');
             }
             $input['username'] = UserHelper::generateUserName($newUsername);
@@ -87,5 +91,32 @@ class UserController extends Controller
         
         Auth::user()->fill($input)->save();
         return redirect()->route('user.show', ['username' => $input['username']]);
+    }
+
+    public function meetAuthors()
+    {
+        $users = User::where('id', '!=', Auth::id())->limit(5)->get();
+        return view('auth.find-users', [
+            'users' => $users
+        ]);
+    }
+
+    public function follow($username)
+    {
+        $follow = User::getByUsername($username);
+
+        if (!isset($follow)) {
+            abort(404);
+        }
+
+        if (!Follower::isFollowed(Auth::id(), $follow->id)) 
+        {
+            Follower::create([
+                'user_id' => Auth::id(),
+                'following_id' => $follow->id
+            ]);
+        }
+        
+        return redirect()->route('users.meet');
     }
 }
