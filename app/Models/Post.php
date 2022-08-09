@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Post extends Model
 {
@@ -28,5 +29,22 @@ class Post extends Model
     public function getByUserAndStatus(User $user, string $status)
     {
         return $user->posts()->where('status', $status)->orderBy('id', 'DESC')->get();
+    }
+
+    public static function getPostsForyou()
+    {
+        $posts = Post::where('user_id', '!=', Auth::id())->where('status', 'posted');
+        return $posts;
+    }
+
+    public static function getPostsFollow()
+    {
+        $posts = self::rightJoin('followers', 'posts.user_id', '=', 'followers.following_id')
+                        ->where('followers.user_id', Auth::id())
+                        ->where('posts.status', 'posted')
+                        ->orderby('posts.created_at', 'desc')
+                        ->get();
+
+        return $posts;
     }
 }
