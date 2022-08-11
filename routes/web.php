@@ -41,14 +41,13 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/{username}/edit', [UserController::class, "update"])->name('user.update');
     Route::get('/{username}', [UserController::class, "show"])->name('user.show');
     Route::get('/users/meet', [UserController::class, "meetAuthors"])->name('users.meet');
-    Route::get('/{username}/follow', [UserController::class, "follow"])->name('user.follow');
+    Route::get('/follow/{username}', [UserController::class, "follow"])->name('user.follow');
    
-    Route::resource('posts', PostController::class)->except([
-        'destroy'
-    ]);
+    Route::resource('posts', PostController::class)->except(['destroy']);
     Route::get('/posts/{username}/published', [PostController::class, 'published'])->name('posts.published');
     Route::get('/posts/{username}/drafts', [PostController::class, 'drafts'])->name('posts.draft');
     Route::get('/posts/{id}/delete', [PostController::class, "destroy"])->name('posts.destroy');
+    Route::get('/like/{uri}', [PostController::class, 'Like'])->name('posts.like');
 
     Route::get('/feed/posts/follow', [FeedController::class, 'postsFollow'])->name('feed.follow');
     Route::get('/feed/posts/foryou', [FeedController::class, 'postsForyou'])->name('feed.foryou');

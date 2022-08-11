@@ -55,6 +55,11 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
         return $this->hasMany(Post::class);
     }
 
+    public function like()
+    {
+        return $this->hasOne(Like::class);
+    }
+
     public static function getByUsername(string $username)
     {
         $user = User::where('username', $username)->first();

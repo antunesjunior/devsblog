@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
+use App\Models\Like;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -30,7 +33,11 @@ class PostController extends Controller
         }
 
         $posts = (new Post())->getByUserAndStatus($user, 'posted');
-        return response()->json($posts);
+        //return response()->json($posts);
+        return view('auth.posts-user', [
+            'title' => 'Artigos Publicados',
+            'posts' => $posts
+        ]);
     }
 
     public function drafts($username)
@@ -43,7 +50,11 @@ class PostController extends Controller
         $this->authorize('viewDrafts', $user);
         $posts = (new Post())->getByUserAndStatus($user, 'draft');
 
-        return response()->json($posts);
+        //return response()->json($posts);
+        return view('auth.posts-user', [
+            'title' => 'Artigos em Rascunho',
+            'posts' => $posts
+        ]);
     }
 
     /**
@@ -113,7 +124,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StorePostRequest $request, $id)
+    public function update(UpdatePostRequest $request, $id)
     {
         $postData = $request->validated();
 
@@ -135,7 +146,24 @@ class PostController extends Controller
         $postData['uri'] = Str::slug($request->input('title'));
 
         $post->fill($postData)->save();
-        return redirect()->route('profile')->with('message', 'Post actualizado com sucesso');
+        return redirect()->route('user.show', Auth::user()->username);
+    }
+
+    public function like($postSlug)
+    {
+        $post = Post::where('uri', $postSlug)->first();
+
+        if (!isset($post)) {
+            abort(404);
+        }
+
+        if (Like::isLiked($post->id)) {
+           Like::getAuthUserLike($post->id)->delete();
+           return back();
+        }
+
+        Like::create(['user_id' => Auth::id(), 'post_id' => $post->id]);
+        return back();
     }
 
     /**
@@ -146,12 +174,12 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        $post = Post::find($id);
+        $post = Post::findOrFail($id);
         $cover = $post->cover;
         
         $post->delete();
         Storage::delete("public/posts/covers/{$cover}");
 
-        return redirect()->route('profile');
+        return back();
     }
 }
