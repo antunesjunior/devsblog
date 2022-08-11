@@ -26,6 +26,11 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function like()
+    {
+        return $this->hasMany(Like::class);
+    }
+
     public function getByUserAndStatus(User $user, string $status)
     {
         return $user->posts()->where('status', $status)->orderBy('id', 'DESC')->get();
@@ -33,17 +38,32 @@ class Post extends Model
 
     public static function getPostsForyou()
     {
-        $posts = Post::where('user_id', '!=', Auth::id())->where('status', 'posted');
+        $posts = Post::where('user_id', '!=', Auth::id())
+                ->where('status', 'posted')
+                ->orderby('created_at', 'desc')
+                ->get();
         return $posts;
     }
 
     public static function getPostsFollow()
     {
-        $posts = self::rightJoin('followers', 'posts.user_id', '=', 'followers.following_id')
-                        ->where('followers.user_id', Auth::id())
-                        ->where('posts.status', 'posted')
-                        ->orderby('posts.created_at', 'desc')
-                        ->get();
+        $posts = self::select(
+            'posts.id',
+            'title',
+            'uri',
+            'description',
+            'views',
+            'cover',
+            'content',
+            'posts.user_id',
+            'posts.created_at',
+            'posts.updated_at'
+            )
+            ->rightJoin('followers', 'posts.user_id', '=', 'followers.following_id')
+            ->where('followers.user_id', Auth::id())
+            ->where('posts.status', 'posted')
+            ->orderby('posts.created_at', 'desc')
+            ->get();
 
         return $posts;
     }

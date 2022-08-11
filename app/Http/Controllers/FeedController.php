@@ -12,12 +12,19 @@ class FeedController extends Controller
     public function postsForYou()
     {
         $posts = Post::getPostsForyou();
-        return response()->json($posts);
+        return view('auth.posts-feed', [
+            'title' => 'Artigos para você',
+            'posts' => $posts
+        ]);
     }
 
     public function postsFollow()
     {
         $postsFollow = Post::getPostsFollow();
-        return response()->json($postsFollow);
+        //return response()->json($postsFollow);
+        return view('auth.posts-feed', [
+            'title' => 'Artigos seguidos',
+            'posts' => $postsFollow
+        ]);
     }
 }
