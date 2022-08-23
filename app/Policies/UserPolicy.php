@@ -20,7 +20,7 @@ class UserPolicy
         return $authUser->id === $user->id;
     }
 
-    public function meet(User $authUser, User $user)
+    public function follow(User $authUser, User $user)
     {
         return !Follower::isFollowed($authUser->id, $user->id);
     }
