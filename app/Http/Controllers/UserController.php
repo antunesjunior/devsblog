@@ -40,6 +40,10 @@ class UserController extends Controller
     {
         $user = User::getByUsername($username);
 
+        if (!isset($user)) {
+            abort(404);
+        }
+
         return view('auth.profile', [
             'user'  => $user,
         ]);
@@ -66,10 +70,8 @@ class UserController extends Controller
 
         $this->authorize('update', $user);
 
-        if (Auth::user()->username != $newUsername) 
-        {
-            if (User::checkUsername($newUsername, $user->id)) 
-            {
+        if (Auth::user()->username != $newUsername) {
+            if (User::checkUsername($newUsername, $user->id)) {
                 return redirect()->back()->with('message', 'Este username já existe, não pode ser usado');
             }
             $input['username'] = UserHelper::generateUserName($newUsername);
@@ -109,13 +111,23 @@ class UserController extends Controller
             abort(404);
         }
 
-        if (!Follower::isFollowed(Auth::id(), $follow->id)) 
-        {
-            Follower::create([
-                'user_id' => Auth::id(),
-                'following_id' => $follow->id
-            ]);
+        if ($follow->id == Auth::id()) {
+            return redirect()->back();
         }
+
+        if (!Auth::user()->can('follow', $follow)) {
+            $follow = Follower::where('user_id', Auth::id())
+            ->where('following_id', $follow->id)
+            ->first();
+
+            $follow->delete();
+            return redirect()->back(); 
+        }
+
+        Follower::create([
+            'user_id' => Auth::id(),
+            'following_id' => $follow->id
+        ]);
         
         return redirect()->route('users.meet');
     }
