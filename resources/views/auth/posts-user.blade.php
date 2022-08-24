@@ -26,9 +26,13 @@
                 <a href="{{ route('posts.like', $post->uri) }}">
                     {{ $post->like()->count() }}.Like
                 </a>
-                <a href="{{ route('posts.comments.index', $post->uri) }}">
+                <a href="{{ route('comments.show', $post->uri) }}">
                     {{ $post->comments()->count() }}.comentarios
                 </a>
+                @can('update', $post)
+                    <a href="{{ route('posts.edit', $post->id) }}">Actualizar</a>
+                    <a href="{{ route('posts.destroy', $post->id) }}">Eliminar</a>
+                @endcan
             </p>
         </div>
     </div>

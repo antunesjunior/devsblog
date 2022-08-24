@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -48,6 +49,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/posts/{username}/drafts', [PostController::class, 'drafts'])->name('posts.draft');
     Route::get('/posts/{id}/delete', [PostController::class, "destroy"])->name('posts.destroy');
     Route::get('/like/{uri}', [PostController::class, 'Like'])->name('posts.like');
+
+    Route::resource('posts.comments', CommentController::class)->shallow();
 
     Route::get('/feed/posts/follow', [FeedController::class, 'postsFollow'])->name('feed.follow');
     Route::get('/feed/posts/foryou', [FeedController::class, 'postsForyou'])->name('feed.foryou');

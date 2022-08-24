@@ -2,7 +2,14 @@
 
 @section('content')
 
-<h2>Comentarios do post: <span style="color: green">{{ $title }}</span></h2>
+<h2>Comentarios do post: <span style="color: green">{{ $post->title }}</span></h2>
+
+<div>
+    <a href="{{ route('posts.comments.create', $post->uri) }}">
+        Adicionar comentário
+    </a>
+</div><br>
+
 <div>
     @foreach ($comments as $comment)
         <article style="border: 1px solid black; padding:0 5px">

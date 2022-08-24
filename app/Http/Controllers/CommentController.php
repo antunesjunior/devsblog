@@ -13,9 +13,20 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($postSlag)
     {
-        //
+        $post = Post::where('uri', $postSlag)->first();
+        
+        if (!isset($post)) {
+            abort(404);
+        }
+
+        $comments = $post->comments()->orderby('created_at')->get();
+
+        return view('auth.comments', [
+            'post' => $post,
+            'comments' => $comments
+        ]);
     }
 
     /**
@@ -23,7 +34,7 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($postSla)
     {
         //
     }
@@ -44,16 +55,10 @@ class CommentController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     */
-    public function show($postUri)
+     */ 
+    public function show($postSlag)
     {
-        $post      = Post::where('uri', $postUri)->first();
-        $comments  = $post->comments()->orderby('created_at')->get();
-
-        return view('auth.comments', [
-            'title' => $post->title,
-            'comments' => $comments
-        ]);
+        
     }
 
     /**

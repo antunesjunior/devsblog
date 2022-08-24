@@ -8,6 +8,9 @@
     </small>
 </h2>
 
-<div><a href="#">Seguindo</a> | <a href="#">Para você</a></div>
+<div>
+    <a href="{{ route('feed.follow') }}">Seguindo</a>| 
+    <a href="{{ route('feed.foryou') }}">Para você</a>
+</div>
 
 @endsection
