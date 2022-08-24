@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -34,9 +35,11 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($postSla)
+    public function create($postSlag)
     {
-        //
+        return view('auth.comments-create',[
+            'slag' => $postSlag
+        ]);
     }
 
     /**
@@ -45,9 +48,25 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $postSlag)
     {
-        //
+        $data = $request->validate([
+            'content' => ['required', 'string']
+        ]);
+
+        $post = Post::where('uri', $postSlag)->first();
+        
+        if (!isset($post)) {
+            abort(404);
+        }
+        
+        Comment::create([
+            'post_id' => $post->id,
+            'user_id' => Auth::id(),
+            'content' => $data['content']
+        ]);
+
+        return redirect()->route('posts.comments.index', $post->uri);
     }
 
     /**

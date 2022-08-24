@@ -12,7 +12,7 @@
 
 <div>
     @foreach ($comments as $comment)
-        <article style="border: 1px solid black; padding:0 5px">
+        <article style="border: 1px solid black; padding:0 5px; margin-bottom:8px">
             <h3>{{ $comment->user->first_name }} {{ $comment->user->last_name }}</h3>
             <p>
                 {{ $comment->content }}
