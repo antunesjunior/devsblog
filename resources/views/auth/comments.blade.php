@@ -23,6 +23,12 @@
                 <small>{{ $comment->updated_at }}</small>
                 @can('update', $comment)
                     <small><a href="{{ route('comments.edit', $comment->id) }}">Editar</a></small>
+        
+                    <form method="POST" action="{{ route('comments.destroy', $comment->id) }}">
+                        @csrf
+                        @method('DELETE')
+                        <input type="submit" value="Apagar">
+                    </form>
                 @endcan
             </p>
         </article>

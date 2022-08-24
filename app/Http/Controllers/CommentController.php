@@ -128,6 +128,10 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $comment = Comment::findOrFail($id);
+        $this->authorize('update', $comment);
+
+        $comment->delete();
+        return redirect()->route('posts.comments.index', $comment->post->uri);
     }
 }

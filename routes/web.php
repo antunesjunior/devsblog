@@ -50,7 +50,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/posts/{id}/delete', [PostController::class, "destroy"])->name('posts.destroy');
     Route::get('/like/{uri}', [PostController::class, 'Like'])->name('posts.like');
 
-    Route::resource('posts.comments', CommentController::class)->shallow();
+    Route::resource('posts.comments', CommentController::class)->except(['show'])->shallow();
 
     Route::get('/feed/posts/follow', [FeedController::class, 'postsFollow'])->name('feed.follow');
     Route::get('/feed/posts/foryou', [FeedController::class, 'postsForyou'])->name('feed.foryou');
