@@ -21,6 +21,9 @@
             <p>
                 <small>{{ $comment->created_at }}</small>&nbsp;|
                 <small>{{ $comment->updated_at }}</small>
+                @can('update', $comment)
+                    <small><a href="{{ route('comments.edit', $comment->id) }}">Editar</a></small>
+                @endcan
             </p>
         </article>
     @endforeach

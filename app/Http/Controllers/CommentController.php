@@ -88,7 +88,14 @@ class CommentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $comment = Comment::findOrFail($id);
+
+        $this->authorize('update', $comment);
+
+        return view('auth.comments-update', [
+            'comment' => $comment
+        ]);
+
     }
 
     /**
@@ -100,7 +107,17 @@ class CommentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->validate([
+            'content' => ['required', 'string']
+        ]);
+
+        $comment = Comment::findOrFail($id);
+        $this->authorize('update', $comment);
+
+        $comment->content = $data['content'];
+        $comment->save();
+
+        return redirect()->route('posts.comments.index', $comment->post->uri);
     }
 
     /**
