@@ -21,7 +21,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($validate, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('/home');
+            return redirect()->route('home');
         }
         
         return back()->with('alert', 'Email ou senha inválida, verifique os dados!');

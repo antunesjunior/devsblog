@@ -26,9 +26,13 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $input = $request->validated();
+        $username = $request->first_name.$request->last_name;
 
         $input['password'] = Hash::make($request->input('password'));
+        $input['username'] = UserHelper::generateUserName($username);
         $user = User::create($input);
+
+        Follower::create(['user_id' => $user->id, 'following_id' => $user->id]);
 
         Auth::login($user);
         event(new Registered($user));
