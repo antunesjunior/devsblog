@@ -33,4 +33,13 @@ class PostHelper
     {
         return $value.'-'.Str::random(5);
     }
+
+    public static function UploadCover($cover)
+    {
+        $coverName = $cover->hashName();
+        $coverPath = 'public/posts/covers';
+        $cover->storeAs($coverPath, $coverName);
+
+        return $coverName;
+    }
 }

@@ -77,16 +77,11 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         $postData = $request->validated();
-
-        $cover = $request->file('cover');
-        $coverName = $cover->hashName();
-        $coverPath = 'public/posts/covers';
-        $cover->storeAs($coverPath, $coverName);
-
-        $postData['cover']   = $coverName;
-        $postData['user_id'] = auth()->user()->id;
+        
         $postData['uri']     = PostHelper::generateSlug($request->input('title'));
-
+        $postData['cover']   = PostHelper::UploadCover($request->file('cover'));
+        $postData['user_id'] = Auth::id();
+        
         $request->has('draft') ? $postData['status'] = 'draft' : '';
     
         Post::create($postData);
