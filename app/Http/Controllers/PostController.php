@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\PostHelper;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Like;
@@ -84,8 +85,8 @@ class PostController extends Controller
 
         $postData['cover']   = $coverName;
         $postData['user_id'] = auth()->user()->id;
-        $postData['uri']     = Str::slug($request->input('title'));
-
+        $postData['uri']     = PostHelper::generateSlug($request->input('title'));
+        
         $request->has('draft') ? $postData['status'] = 'draft' : '';
     
         Post::create($postData);
@@ -143,7 +144,7 @@ class PostController extends Controller
             Storage::delete($coverPath.'/'.$oldCoverName);
         }
 
-        $postData['uri'] = Str::slug($request->input('title'));
+        $postData['uri'] = PostHelper::generateSlug($request->input('title'), Auth::id());
 
         $post->fill($postData)->save();
         return redirect()->route('user.show', Auth::user()->username);
