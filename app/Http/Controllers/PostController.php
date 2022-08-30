@@ -81,7 +81,7 @@ class PostController extends Controller
         $postData['uri']     = PostHelper::generateSlug($request->input('title'));
         $postData['cover']   = PostHelper::UploadCover($request->file('cover'));
         $postData['user_id'] = Auth::id();
-        
+
         $request->has('draft') ? $postData['status'] = 'draft' : '';
     
         Post::create($postData);
@@ -128,26 +128,16 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, $id)
     {
-        $postData = $request->validated();
+        $input = $request->validated();
 
         $post = Post::find($id);
 
-        if ($request->hasFile('cover')) 
-        {
-            $cover = $request->file('cover');
-            $coverName = $cover->hashName();
-            $oldCoverName = $post->cover;
-
-            $coverPath = 'public/posts/covers';
-            $cover->storeAs($coverPath, $coverName);
-
-            $postData['cover']   = $coverName;
-            Storage::delete($coverPath.'/'.$oldCoverName);
+        if ($request->hasFile('cover')) {
+            $input['cover'] = PostHelper::UpdateCover($request->cover, $post->cover);
         }
+        $input['uri'] = PostHelper::generateSlug($request->title, Auth::id());
 
-        $postData['uri'] = PostHelper::generateSlug($request->input('title'), Auth::id());
-
-        $post->fill($postData)->save();
+        $post->fill($input)->save();
         return redirect()->route('user.show', Auth::user()->username);
     }
 
