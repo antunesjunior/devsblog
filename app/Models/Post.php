@@ -36,6 +36,11 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public static function getBySlug($slug)
+    {
+        return self::where('uri', $slug)->first();
+    }
+
     public function getByUserAndStatus(User $user, string $status)
     {
         return $user->posts()->where('status', $status)->orderBy('id', 'DESC')->get();

@@ -86,7 +86,7 @@ class PostController extends Controller
         $postData['cover']   = $coverName;
         $postData['user_id'] = auth()->user()->id;
         $postData['uri']     = PostHelper::generateSlug($request->input('title'));
-        
+
         $request->has('draft') ? $postData['status'] = 'draft' : '';
     
         Post::create($postData);
@@ -99,8 +99,14 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show($slug)
     {
+        $post = Post::getBySlug($slug);
+
+        if (!isset($post)) {
+            abort(404);
+        }
+
         return view('auth.post', [
             'post' => $post
         ]);
@@ -152,7 +158,7 @@ class PostController extends Controller
 
     public function like($postSlug)
     {
-        $post = Post::where('uri', $postSlug)->first();
+        $post = Post::getBySlug($postSlug);
 
         if (!isset($post)) {
             abort(404);

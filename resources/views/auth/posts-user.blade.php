@@ -22,11 +22,11 @@
                 </small>
             </p>
             <p>
-                <a href="{{ route('posts.show', $post->id) }}">Ver Artigo</a>
+                <a href="{{ route('posts.show', $post->uri) }}">Ver Artigo</a>
                 <a href="{{ route('posts.like', $post->uri) }}">
                     {{ $post->like()->count() }}.Like
                 </a>
-                <a href="{{ route('comments.show', $post->uri) }}">
+                <a href="{{ route('posts.comments.index', $post->uri) }}">
                     {{ $post->comments()->count() }}.comentarios
                 </a>
                 @can('update', $post)

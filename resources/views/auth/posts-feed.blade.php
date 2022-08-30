@@ -22,7 +22,7 @@
                 </small>
             </p>
             <p>
-                <a href="{{ route('posts.show', $post->id) }}">Ver Artigo</a>
+                <a href="{{ route('posts.show', $post->uri) }}">Ver Artigo</a>
                 <a href="{{ route('posts.like', $post->uri) }}">
                     {{ $post->like()->count() }}.Like
                 </a>
