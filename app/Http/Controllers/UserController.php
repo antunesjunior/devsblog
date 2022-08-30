@@ -81,18 +81,8 @@ class UserController extends Controller
             $input['username'] = UserHelper::generateUserName($newUsername);
         }
 
-        if ($request->hasFile('picture')) 
-        {
-            $image = $request->file('picture');
-            $storagePath = 'public/avatars';
-            $imageName = $image->hashName();
-            $image->storeAs($storagePath, $imageName);
-
-            if (Auth::user()->picture) {
-                Storage::delete($storagePath.'/'.auth()->user()->picture);
-            }
-
-            $input['picture'] = $imageName;
+        if ($request->hasFile('picture')) {
+            $input['picture'] = UserHelper::UpdateImage($request->picture, Auth::user()->picture);
         }
         
         Auth::user()->fill($input)->save();

@@ -5,8 +5,10 @@ namespace App\Helpers;
 use App\Models\User;
 use Illuminate\Support\Str;
 
-class UserHelper
+class UserHelper extends Helper
 {
+    protected static $imagePath = 'public/avatars';
+
     public static function generateUserName($username)
     {
         $username = Str::slug($username, '');

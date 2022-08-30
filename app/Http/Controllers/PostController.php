@@ -81,7 +81,7 @@ class PostController extends Controller
         $postData = $request->validated();
         
         $postData['uri']     = PostHelper::generateSlug($request->input('title'));
-        $postData['cover']   = PostHelper::UploadCover($request->file('cover'));
+        $postData['cover']   = PostHelper::UploadImage($request->file('cover'));
         $postData['user_id'] = Auth::id();
 
         $request->has('draft') ? $postData['status'] = 'draft' : '';
@@ -136,9 +136,9 @@ class PostController extends Controller
 
         $this->authorize('update', $post);
 
-        !$request->hasFile('cover') ? '' 
-            :$input['cover'] = PostHelper::UpdateCover($request->cover, $post->cover);
-        
+        if ($request->hasFile('cover')){
+            $input['cover'] = PostHelper::UpdateImage($request->cover, $post->cover);
+        } 
         $input['uri'] = PostHelper::generateSlug($request->title, Auth::id());
         $post->fill($input)->save();
         
@@ -174,7 +174,7 @@ class PostController extends Controller
         $cover = $post->cover;
         
         $post->delete();
-        Storage::delete("public/posts/covers/{$cover}");
+        PostHelper::deleteImage($cover);
 
         return back();
     }

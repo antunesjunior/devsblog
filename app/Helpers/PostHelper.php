@@ -3,29 +3,11 @@
 namespace App\Helpers;
 
 use App\Models\Post;
-use App\Models\User;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class PostHelper
+class PostHelper extends Helper
 {
-    private const COVER_PATH = 'public/posts/covers';
-
-    public static function UploadCover($cover)
-    {
-        $coverName = $cover->hashName();
-        $cover->storeAs(self::COVER_PATH, $coverName);
-
-        return $coverName;
-    }
-
-    public static function UpdateCover($cover, $oldCoverName)
-    {
-        $newCover = self::UploadCover($cover);
-        Storage::delete(self::COVER_PATH.'/'.$oldCoverName);
-
-        return $newCover;
-    }
+    protected static $imagePath = 'public/posts/covers';
 
     public static function generateSlug($value, $authId = null)
     {
