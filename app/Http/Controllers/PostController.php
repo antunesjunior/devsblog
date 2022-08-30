@@ -29,6 +29,7 @@ class PostController extends Controller
     public function published($username)
     {
         $user = User::getByUsername($username);
+
         if (!isset($user)) {
             abort(404);
         }
@@ -44,6 +45,7 @@ class PostController extends Controller
     public function drafts($username)
     {
         $user = User::getByUsername($username);
+
         if (!isset($user)) {
             abort(404);
         }
@@ -96,11 +98,7 @@ class PostController extends Controller
      */
     public function show($slug)
     {
-        $post = Post::getBySlug($slug);
-
-        if (!isset($post)) {
-            abort(404);
-        }
+        $post = Post::getBySlugOrFail($slug);
 
         return view('auth.post', [
             'post' => $post
@@ -113,10 +111,15 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($slug)
     {
-        $postData = Post::find($id);
-        return view('auth.post-edit', ['post' => $postData]);
+        $post = Post::getBySlugOrFail($slug);
+
+        $this->authorize('update', $post);
+
+        return view('auth.post-edit', [
+            'post' => $post
+        ]);
     }
 
     /**
@@ -126,35 +129,36 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePostRequest $request, $id)
+    public function update(UpdatePostRequest $request, $slug)
     {
         $input = $request->validated();
+        $post = Post::getBySlugOrFail($slug);
 
-        $post = Post::find($id);
+        $this->authorize('update', $post);
 
-        if ($request->hasFile('cover')) {
-            $input['cover'] = PostHelper::UpdateCover($request->cover, $post->cover);
-        }
+        !$request->hasFile('cover') ? '' 
+            :$input['cover'] = PostHelper::UpdateCover($request->cover, $post->cover);
+        
         $input['uri'] = PostHelper::generateSlug($request->title, Auth::id());
-
         $post->fill($input)->save();
+        
         return redirect()->route('user.show', Auth::user()->username);
     }
 
     public function like($postSlug)
     {
-        $post = Post::getBySlug($postSlug);
-
-        if (!isset($post)) {
-            abort(404);
-        }
+        $post = Post::getBySlugOrFail($postSlug);
 
         if (Like::isLiked($post->id)) {
-           Like::getAuthUserLike($post->id)->delete();
-           return back();
+            Like::getAuthUserLike($post->id)->delete();
+            return back();
         }
 
-        Like::create(['user_id' => Auth::id(), 'post_id' => $post->id]);
+        Like::create([
+            'user_id' => Auth::id(), 
+            'post_id' => $post->id
+        ]);
+
         return back();
     }
 
@@ -164,9 +168,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($slug)
     {
-        $post = Post::findOrFail($id);
+        $post = Post::getBySlugOrFail($slug);
         $cover = $post->cover;
         
         $post->delete();

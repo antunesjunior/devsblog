@@ -36,9 +36,14 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public static function getBySlug($slug)
+    public static function getBySlugOrFail($slug)
     {
-        return self::where('uri', $slug)->first();
+        $post = self::where('uri', $slug)->first();
+        if (!isset($post)) {
+            abort(404);
+        }
+        
+        return $post;
     }
 
     public function getByUserAndStatus(User $user, string $status)

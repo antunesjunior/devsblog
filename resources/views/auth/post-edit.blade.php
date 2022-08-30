@@ -7,7 +7,7 @@
         <p>{{ session()->get('message') }}</p>
     @endif
 
-    <form action="{{ route('posts.update', $post->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('posts.update', $post->uri) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div>

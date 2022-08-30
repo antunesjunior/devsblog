@@ -30,8 +30,8 @@
                     {{ $post->comments()->count() }}.comentarios
                 </a>
                 @can('update', $post)
-                    <a href="{{ route('posts.edit', $post->id) }}">Actualizar</a>
-                    <a href="{{ route('posts.destroy', $post->id) }}">Eliminar</a>
+                    <a href="{{ route('posts.edit', $post->uri) }}">Actualizar</a>
+                    <a href="{{ route('posts.destroy', $post->uri) }}">Eliminar</a>
                 @endcan
             </p>
         </div>
