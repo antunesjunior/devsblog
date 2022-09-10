@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('responses', function (Blueprint $table) {
+        Schema::create('CommentReplies', function (Blueprint $table) {
             $table->id();
-            $table->text('content');
+            $table->longText('content');
             $table->foreignId('user_id')->constrained();
             $table->foreignId('comment_id')->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

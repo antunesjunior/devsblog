@@ -15,10 +15,11 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->text('content');
+            $table->longText('content');
             $table->foreignId('user_id')->constrained();
             $table->foreignId('post_id')->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
