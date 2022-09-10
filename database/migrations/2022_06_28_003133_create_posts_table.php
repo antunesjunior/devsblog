@@ -20,10 +20,12 @@ return new class extends Migration
             $table->unsignedBigInteger('views')->default(0);
             $table->text('description')->nullable();
             $table->string('cover');
-            $table->text('content');
-            $table->enum('status', ['posted', 'draft'])->default('posted');
+            $table->longText('content');
+            $table->boolean('is_draft')->default(false);
             $table->foreignId('user_id')->constrained();
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
