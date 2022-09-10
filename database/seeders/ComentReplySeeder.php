@@ -6,7 +6,7 @@ use App\Models\Response;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ResponseSeeder extends Seeder
+class CommentReplySeeder extends Seeder
 {
     /**
      * Run the database seeds.

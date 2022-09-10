@@ -2,11 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Comment;
-use App\Models\Follower;
-use App\Models\Like;
-use App\Models\Response;
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -25,7 +20,7 @@ class DatabaseSeeder extends Seeder
             PostSeeder::class,
             LikeSeeder::class,
             CommentSeeder::class,
-            ResponseSeeder::class
+            CommentReplySeeder::class
         ]);
     }
 }
