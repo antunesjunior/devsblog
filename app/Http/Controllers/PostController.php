@@ -171,10 +171,10 @@ class PostController extends Controller
     public function destroy($slug)
     {
         $post = Post::getBySlugOrFail($slug);
-        $cover = $post->cover;
+
+        $this->authorize('delete', $post);
         
         $post->delete();
-        PostHelper::deleteImage($cover);
 
         return back();
     }

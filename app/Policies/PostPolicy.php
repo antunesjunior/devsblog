@@ -14,4 +14,9 @@ class PostPolicy
     {
         return $authUser->id === $post->user->id;
     }
+
+    public function delete(User $authUser, Post $post)
+    {
+        return $authUser->id === $post->user->id;
+    }
 }
