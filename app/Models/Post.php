@@ -18,7 +18,7 @@ class Post extends Model
         'description',
         'cover',
         'content',
-        'status',
+        'is_draft',
         'user_id'
     ];
 
@@ -47,15 +47,10 @@ class Post extends Model
         return $post;
     }
 
-    public function getByUserAndStatus(User $user, string $status)
-    {
-        return $user->posts()->where('status', $status)->orderBy('id', 'DESC')->get();
-    }
-
     public static function getPostsForyou()
     {
         $posts = Post::where('user_id', '!=', Auth::id())
-                ->where('status', 'posted')
+                ->where('is_draft', '0')
                 ->orderby('created_at', 'desc')
                 ->get();
         return $posts;
@@ -77,7 +72,7 @@ class Post extends Model
             )
             ->rightJoin('followers', 'posts.user_id', '=', 'followers.following_id')
             ->where('followers.user_id', Auth::id())
-            ->where('posts.status', 'posted')
+            ->where('posts.is_draft', '0')
             ->orderby('posts.created_at', 'desc')
             ->get();
 

@@ -22,7 +22,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::where('status', 'posted');
+        $posts = Post::where('is_draft', 0);
         return response()->json($posts);
     }
 
@@ -34,7 +34,7 @@ class PostController extends Controller
             abort(404);
         }
 
-        $posts = (new Post())->getByUserAndStatus($user, 'posted');
+        $posts = $user->posts()->where('is_draft', 0)->get();
         //return response()->json($posts);
         return view('auth.posts-user', [
             'title' => 'Artigos Publicados',
@@ -51,7 +51,7 @@ class PostController extends Controller
         }
 
         $this->authorize('viewDrafts', $user);
-        $posts = (new Post())->getByUserAndStatus($user, 'draft');
+        $posts = $user->posts()->where('is_draft', 1)->get();
 
         //return response()->json($posts);
         return view('auth.posts-user', [
@@ -84,7 +84,7 @@ class PostController extends Controller
         $postData['cover']   = PostHelper::UploadImage($request->file('cover'));
         $postData['user_id'] = Auth::id();
 
-        $request->has('draft') ? $postData['status'] = 'draft' : '';
+        $request->has('draft') ? $postData['is_draft'] = '1' : '';
     
         Post::create($postData);
         return back()->with('message', 'Sucesso');
