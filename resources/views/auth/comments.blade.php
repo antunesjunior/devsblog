@@ -30,6 +30,11 @@
                         <input type="submit" value="Apagar">
                     </form>
                 @endcan
+                <small>
+                    <a href="{{ route('comments.replies.index', $comment->id) }}">
+                        {{ $comment->replies()->count() }}.Respostas
+                    </a>
+                </small>
             </p>
         </article>
     @endforeach
