@@ -14,4 +14,9 @@ class CommentPolicy
     {
         return $authUser->id === $comment->user->id;
     }
+
+    public function delete(User $authUser, Comment $comment)
+    {
+        return $authUser->id === $comment->user->id;
+    }
 }
