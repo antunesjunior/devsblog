@@ -10,6 +10,12 @@ class CommentReply extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'user_id',
+        'content',
+        'comment_id'
+    ];
+    
     public function user()
     {
         return $this->belongsTo(User::class);

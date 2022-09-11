@@ -6,7 +6,7 @@
 
 <div>
     <a href="{{ route('comments.replies.create', $comment->id) }}">
-        Adicionar comentário
+        Adicionar resposta
     </a>
 </div><br>
 

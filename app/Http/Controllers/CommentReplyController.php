@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\CommentReply;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentReplyController extends Controller
 {
@@ -17,7 +18,7 @@ class CommentReplyController extends Controller
     {
         $comment = Comment::findOrFail($id);
 
-        $replies = $comment->replies()->orderby('created_at')->get();
+        $replies = $comment->replies()->orderby('created_at', 'desc')->get();
 
         return view('auth.reply', [
             'comment' => $comment,
@@ -31,9 +32,11 @@ class CommentReplyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($commentId)
     {
-        //
+        return view('auth.reply-create', [
+            'id' => $commentId
+        ]);
     }
 
     /**
@@ -42,9 +45,21 @@ class CommentReplyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
-        //
+        $data = $request->validate([
+            'content' => ['required', 'string']
+        ]);
+
+        $comment = Comment::findOrFail($id);
+
+        CommentReply::create([
+            'comment_id' => $comment->id,
+            'content' => $data['content'],
+            'user_id' => Auth::id()
+        ]);
+
+        return redirect()->route('comments.replies.index', $comment->id);
     }
 
     /**
